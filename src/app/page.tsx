@@ -11,6 +11,8 @@ import {
   Smile,
   Copy,
   Loader2,
+  Gauge, 
+  Tags,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,8 +39,10 @@ import { rewriteText } from "@/ai/flows/rewrite-text";
 import { expandText } from "@/ai/flows/expand-text";
 import { summarizeText } from "@/ai/flows/summarize-text";
 import { changeTextTone } from "@/ai/flows/change-text-tone";
+import { analyzeTextSentiment } from "@/ai/flows/analyze-sentiment";
+import { generateTitleAndKeywords } from "@/ai/flows/generate-title-keywords";
 
-type Action = "rewrite" | "expand" | "summarize" | "tone";
+type Action = "rewrite" | "expand" | "summarize" | "tone" | "sentiment" | "titleKeywords";
 type Tone = "Formal" | "Friendly" | "Casual" | "Professional" | "Academic";
 
 const toneOptions: Tone[] = [
@@ -62,6 +66,8 @@ const actionDisplayNames: Record<Action, string> = {
   expand: "Mở rộng",
   summarize: "Tóm tắt",
   tone: "Giọng điệu",
+  sentiment: "Phân tích cảm xúc",
+  titleKeywords: "Tiêu đề & Từ khóa",
 };
 
 export default function ScribbleGeniusPage() {
@@ -122,8 +128,16 @@ export default function ScribbleGeniusPage() {
             });
             resultText = toneResult.changedText;
             break;
+          case "sentiment":
+            const sentimentResult = await analyzeTextSentiment({ text: inputText });
+            resultText = `Cảm xúc: ${sentimentResult.sentiment}\n\nGiải thích: ${sentimentResult.explanation}`;
+            break;
+          case "titleKeywords":
+            const titleKeywordsResult = await generateTitleAndKeywords({ text: inputText });
+            resultText = `Tiêu đề đề xuất: ${titleKeywordsResult.generatedTitle}\n\nTừ khóa: ${titleKeywordsResult.generatedKeywords.join(', ')}`;
+            break;
           default:
-            throw new Error("Invalid action selected");
+            throw new Error("Hành động không hợp lệ được chọn");
         }
         setOutputText(resultText);
         toast({
@@ -168,6 +182,8 @@ export default function ScribbleGeniusPage() {
     expand: <Expand className="mr-2 h-5 w-5" />,
     summarize: <AlignLeft className="mr-2 h-5 w-5" />,
     tone: <Smile className="mr-2 h-5 w-5" />,
+    sentiment: <Gauge className="mr-2 h-5 w-5" />,
+    titleKeywords: <Tags className="mr-2 h-5 w-5" />,
   };
 
   return (
@@ -190,7 +206,7 @@ export default function ScribbleGeniusPage() {
               onValueChange={handleActionChange}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3">
                 {(Object.keys(actionIcons) as Action[]).map((action) => (
                   <TabsTrigger key={action} value={action} className="capitalize text-sm flex items-center justify-center">
                     {actionIcons[action]}
@@ -272,7 +288,7 @@ export default function ScribbleGeniusPage() {
                       value={outputText}
                       readOnly
                       rows={10}
-                      className="resize-none text-base bg-muted/30 focus:ring-0"
+                      className="resize-none text-base bg-muted/30 focus:ring-0 whitespace-pre-wrap"
                       placeholder="Văn bản do AI tạo sẽ xuất hiện ở đây..."
                     />
                   )}
@@ -331,6 +347,3 @@ const SparklesIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <path d="M21 17L19 20L17 17" />
   </svg>
 );
-
-
-    
