@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { ChangeEvent, FormEvent } from "react";
@@ -48,6 +49,21 @@ const toneOptions: Tone[] = [
   "Academic",
 ];
 
+const toneDisplayMap: Record<Tone, string> = {
+  Formal: "Trang trọng",
+  Friendly: "Thân thiện",
+  Casual: "Thông thường",
+  Professional: "Chuyên nghiệp",
+  Academic: "Học thuật",
+};
+
+const actionDisplayNames: Record<Action, string> = {
+  rewrite: "Viết lại",
+  expand: "Mở rộng",
+  summarize: "Tóm tắt",
+  tone: "Giọng điệu",
+};
+
 export default function ScribbleGeniusPage() {
   const [inputText, setInputText] = useState<string>("");
   const [outputText, setOutputText] = useState<string>("");
@@ -72,8 +88,8 @@ export default function ScribbleGeniusPage() {
     e.preventDefault();
     if (!inputText.trim()) {
       toast({
-        title: "Input Required",
-        description: "Please enter some text to process.",
+        title: "Yêu cầu nhập liệu",
+        description: "Vui lòng nhập một ít văn bản để xử lý.",
         variant: "destructive",
       });
       return;
@@ -111,18 +127,18 @@ export default function ScribbleGeniusPage() {
         }
         setOutputText(resultText);
         toast({
-          title: "Success!",
-          description: "Your text has been processed.",
+          title: "Thành công!",
+          description: "Văn bản của bạn đã được xử lý.",
         });
       } catch (error) {
         console.error("AI Action Error:", error);
         toast({
-          title: "Error",
+          title: "Lỗi",
           description:
-            error instanceof Error ? error.message : "Failed to process text. Please try again.",
+            error instanceof Error ? error.message : "Không thể xử lý văn bản. Vui lòng thử lại.",
           variant: "destructive",
         });
-        setOutputText("An error occurred. Please check the console for details.");
+        setOutputText("Đã xảy ra lỗi. Vui lòng kiểm tra console để biết chi tiết.");
       }
     });
   };
@@ -133,15 +149,15 @@ export default function ScribbleGeniusPage() {
       .writeText(outputText)
       .then(() => {
         toast({
-          title: "Copied!",
-          description: "Output text copied to clipboard.",
+          title: "Đã sao chép!",
+          description: "Văn bản đầu ra đã được sao chép vào bộ nhớ tạm.",
         });
       })
       .catch((err) => {
         console.error("Copy Error:", err);
         toast({
-          title: "Copy Failed",
-          description: "Could not copy text to clipboard.",
+          title: "Sao chép thất bại",
+          description: "Không thể sao chép văn bản vào bộ nhớ tạm.",
           variant: "destructive",
         });
       });
@@ -178,21 +194,21 @@ export default function ScribbleGeniusPage() {
                 {(Object.keys(actionIcons) as Action[]).map((action) => (
                   <TabsTrigger key={action} value={action} className="capitalize text-sm flex items-center justify-center">
                     {actionIcons[action]}
-                    {action}
+                    {actionDisplayNames[action]}
                   </TabsTrigger>
                 ))}
               </TabsList>
 
               <Card className="mt-4 shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-xl">Your Text</CardTitle>
+                  <CardTitle className="text-xl">Văn bản của bạn</CardTitle>
                   <CardDescription>
-                    Enter the text you want to transform.
+                    Nhập văn bản bạn muốn chuyển đổi.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <Textarea
-                    placeholder="Paste or type your text here..."
+                    placeholder="Dán hoặc nhập văn bản của bạn tại đây..."
                     value={inputText}
                     onChange={handleInputChange}
                     rows={10}
@@ -201,19 +217,19 @@ export default function ScribbleGeniusPage() {
                   />
                   {selectedAction === "tone" && (
                     <div className="space-y-1.5">
-                      <label htmlFor="tone-select" className="text-sm font-medium">Select Tone</label>
+                      <label htmlFor="tone-select" className="text-sm font-medium">Chọn giọng điệu</label>
                       <Select
                         value={selectedTone}
                         onValueChange={handleToneChange}
                         disabled={isPending}
                       >
                         <SelectTrigger id="tone-select" className="w-full sm:w-[200px]">
-                          <SelectValue placeholder="Select a tone" />
+                          <SelectValue placeholder="Chọn một giọng điệu" />
                         </SelectTrigger>
                         <SelectContent>
                           {toneOptions.map((tone) => (
                             <SelectItem key={tone} value={tone}>
-                              {tone}
+                              {toneDisplayMap[tone]}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -232,7 +248,7 @@ export default function ScribbleGeniusPage() {
                     ) : (
                       <SparklesIcon className="mr-2 h-5 w-5" />
                     )}
-                    Generate
+                    Tạo
                   </Button>
                 </CardFooter>
               </Card>
@@ -241,15 +257,15 @@ export default function ScribbleGeniusPage() {
             { (outputText || isPending) && (
               <Card className="mt-6 shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-xl">Generated Output</CardTitle>
+                  <CardTitle className="text-xl">Kết quả được tạo</CardTitle>
                    <CardDescription>
-                    Here's the AI-generated version of your text.
+                    Đây là phiên bản văn bản do AI tạo ra.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   {isPending ? (
                     <div className="flex items-center justify-center rounded-md border border-dashed p-10 text-muted-foreground">
-                       <Loader2 className="mr-2 h-8 w-8 animate-spin" /> Processing...
+                       <Loader2 className="mr-2 h-8 w-8 animate-spin" /> Đang xử lý...
                     </div>
                   ) : (
                     <Textarea
@@ -257,7 +273,7 @@ export default function ScribbleGeniusPage() {
                       readOnly
                       rows={10}
                       className="resize-none text-base bg-muted/30 focus:ring-0"
-                      placeholder="AI generated text will appear here..."
+                      placeholder="Văn bản do AI tạo sẽ xuất hiện ở đây..."
                     />
                   )}
                 </CardContent>
@@ -269,7 +285,7 @@ export default function ScribbleGeniusPage() {
                       className="w-full sm:w-auto text-base"
                     >
                       <Copy className="mr-2 h-5 w-5" />
-                      Copy to Clipboard
+                      Sao chép vào bộ nhớ tạm
                     </Button>
                   </CardFooter>
                 )}
@@ -282,10 +298,10 @@ export default function ScribbleGeniusPage() {
       <footer className="py-6 md:px-8 md:py-8 border-t">
         <div className="container flex flex-col items-center justify-center gap-2 text-center sm:flex-row sm:justify-between">
           <p className="text-sm text-muted-foreground">
-            Powered by Google Gemini.
+            Cung cấp bởi Google Gemini.
           </p>
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} ScribbleGenius. All rights reserved.
+            &copy; {new Date().getFullYear()} ScribbleGenius. Bảo lưu mọi quyền.
           </p>
         </div>
       </footer>
@@ -315,3 +331,6 @@ const SparklesIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <path d="M21 17L19 20L17 17" />
   </svg>
 );
+
+
+    

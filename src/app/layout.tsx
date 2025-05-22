@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -16,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "ScribbleGenius",
-  description: "AI-powered writing assistant to rewrite, expand, summarize, and change the tone of your text.",
+  description: "Trợ lý viết AI giúp viết lại, mở rộng, tóm tắt và thay đổi giọng điệu văn bản của bạn.",
 };
 
 export default function RootLayout({
@@ -25,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -77,3 +78,6 @@ export default function RootLayout({
 // The `ThemeProvider` I created earlier is simpler. I'll adjust the layout to use it correctly.
 // The custom ThemeProvider doesn't use `attribute`, `enableSystem`, `disableTransitionOnChange`.
 // The `suppressHydrationWarning` on `html` tag is good practice when using themes.
+
+
+    
