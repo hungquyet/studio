@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -206,7 +206,7 @@ export default function ScribbleGeniusPage() {
               onValueChange={handleActionChange}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3">
+              <TabsList className="grid h-auto w-full grid-cols-2 gap-3 bg-transparent p-0 sm:grid-cols-3">
                 {(Object.keys(actionIcons) as Action[]).map((action) => (
                   <TabsTrigger key={action} value={action} className="capitalize text-sm flex items-center justify-center">
                     {actionIcons[action]}
