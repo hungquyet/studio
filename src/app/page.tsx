@@ -176,7 +176,7 @@ export default function ScribbleGeniusPage() {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <PenTool className="h-7 w-7 text-primary" />
-            <h1 className="text-2xl font-bold tracking-tight">ScribbleGenius</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Trợ Lý Viết AI</h1>
           </div>
           <ThemeToggle />
         </div>
@@ -301,7 +301,7 @@ export default function ScribbleGeniusPage() {
             Cung cấp bởi Google Gemini.
           </p>
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} ScribbleGenius. Bảo lưu mọi quyền.
+            &copy; {new Date().getFullYear()} Trợ Lý Viết AI. Bảo lưu mọi quyền.
           </p>
         </div>
       </footer>

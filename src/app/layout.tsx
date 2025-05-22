@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ScribbleGenius",
+  title: "Trợ Lý Viết AI",
   description: "Trợ lý viết AI giúp viết lại, mở rộng, tóm tắt và thay đổi giọng điệu văn bản của bạn.",
 };
 
