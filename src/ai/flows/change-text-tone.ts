@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -14,12 +15,13 @@ import {z} from 'genkit';
 const ChangeTextToneInputSchema = z.object({
   text: z.string().describe('Văn bản cần thay đổi giọng điệu.'),
   tone: z.string().describe('Giọng điệu mong muốn của văn bản (ví dụ: Trang trọng, Thân thiện, Thông thường, Chuyên nghiệp, Học thuật).'),
+  targetLanguage: z.string().describe('Ngôn ngữ mong muốn cho văn bản đầu ra (ví dụ: English, Vietnamese, French). Mặc định là Vietnamese nếu không được cung cấp.'),
 });
 
 export type ChangeTextToneInput = z.infer<typeof ChangeTextToneInputSchema>;
 
 const ChangeTextToneOutputSchema = z.object({
-  changedText: z.string().describe('Văn bản đã được thay đổi giọng điệu, bằng tiếng Việt.'),
+  changedText: z.string().describe('Văn bản đã được thay đổi giọng điệu, bằng ngôn ngữ mục tiêu.'),
 });
 
 export type ChangeTextToneOutput = z.infer<typeof ChangeTextToneOutputSchema>;
@@ -32,7 +34,7 @@ const prompt = ai.definePrompt({
   name: 'changeTextTonePrompt',
   input: {schema: ChangeTextToneInputSchema},
   output: {schema: ChangeTextToneOutputSchema},
-  prompt: `Bạn là một trợ lý viết. Nhiệm vụ của bạn là thay đổi giọng điệu của văn bản do người dùng cung cấp sang giọng điệu do người dùng chỉ định. Trả lời bằng tiếng Việt.
+  prompt: `Bạn là một trợ lý viết. Nhiệm vụ của bạn là thay đổi giọng điệu của văn bản do người dùng cung cấp sang giọng điệu do người dùng chỉ định. Trả lời bằng ngôn ngữ {{{targetLanguage}}}.
 
 Văn bản: {{{text}}}
 Giọng điệu: {{{tone}}}

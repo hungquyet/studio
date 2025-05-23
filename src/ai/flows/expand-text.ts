@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -13,11 +14,12 @@ import {z} from 'genkit';
 
 const ExpandTextInputSchema = z.object({
   text: z.string().describe('Văn bản cần mở rộng.'),
+  targetLanguage: z.string().describe('Ngôn ngữ mong muốn cho văn bản đầu ra (ví dụ: English, Vietnamese, French). Mặc định là Vietnamese nếu không được cung cấp.'),
 });
 export type ExpandTextInput = z.infer<typeof ExpandTextInputSchema>;
 
 const ExpandTextOutputSchema = z.object({
-  expandedText: z.string().describe('Văn bản đã được mở rộng, bằng tiếng Việt.'),
+  expandedText: z.string().describe('Văn bản đã được mở rộng, bằng ngôn ngữ mục tiêu.'),
 });
 export type ExpandTextOutput = z.infer<typeof ExpandTextOutputSchema>;
 
@@ -29,7 +31,7 @@ const expandTextPrompt = ai.definePrompt({
   name: 'expandTextPrompt',
   input: {schema: ExpandTextInputSchema},
   output: {schema: ExpandTextOutputSchema},
-  prompt: `Mở rộng văn bản sau đây để cung cấp thêm chi tiết và giải thích. Trả lời bằng tiếng Việt:\n\n{{{text}}}`,
+  prompt: `Mở rộng văn bản sau đây để cung cấp thêm chi tiết và giải thích. Trả lời bằng ngôn ngữ {{{targetLanguage}}}:\n\n{{{text}}}`,
 });
 
 const expandTextFlow = ai.defineFlow(

@@ -13,6 +13,7 @@ import {
   Loader2,
   Gauge, 
   Tags,
+  Languages, // Added for language selection
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +35,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Label } from "@/components/ui/label";
+
 
 import { rewriteText } from "@/ai/flows/rewrite-text";
 import { expandText } from "@/ai/flows/expand-text";
@@ -44,6 +47,8 @@ import { generateTitleAndKeywords } from "@/ai/flows/generate-title-keywords";
 
 type Action = "rewrite" | "expand" | "summarize" | "tone" | "sentiment" | "titleKeywords";
 type Tone = "Formal" | "Friendly" | "Casual" | "Professional" | "Academic";
+type Language = "Vietnamese" | "English" | "French" | "Spanish" | "Japanese" | "Korean" | "German" | "ChineseSimplified";
+
 
 const toneOptions: Tone[] = [
   "Formal",
@@ -61,6 +66,29 @@ const toneDisplayMap: Record<Tone, string> = {
   Academic: "Học thuật",
 };
 
+const languageOptions: Language[] = [
+  "Vietnamese",
+  "English",
+  "French",
+  "Spanish",
+  "Japanese",
+  "Korean",
+  "German",
+  "ChineseSimplified",
+];
+
+const languageDisplayMap: Record<Language, string> = {
+  Vietnamese: "Tiếng Việt",
+  English: "English",
+  French: "Français",
+  Spanish: "Español",
+  Japanese: "日本語",
+  Korean: "한국어",
+  German: "Deutsch",
+  ChineseSimplified: "简体中文",
+};
+
+
 const actionDisplayNames: Record<Action, string> = {
   rewrite: "Viết lại",
   expand: "Mở rộng",
@@ -75,6 +103,7 @@ export default function ScribbleGeniusPage() {
   const [outputText, setOutputText] = useState<string>("");
   const [selectedAction, setSelectedAction] = useState<Action>("rewrite");
   const [selectedTone, setSelectedTone] = useState<Tone>("Friendly");
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>("Vietnamese");
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
@@ -88,6 +117,10 @@ export default function ScribbleGeniusPage() {
 
   const handleToneChange = (value: string) => {
     setSelectedTone(value as Tone);
+  };
+
+  const handleLanguageChange = (value: string) => {
+    setSelectedLanguage(value as Language);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -105,35 +138,37 @@ export default function ScribbleGeniusPage() {
     startTransition(async () => {
       try {
         let resultText = "";
+        const commonInput = { text: inputText, targetLanguage: selectedLanguage };
+
         switch (selectedAction) {
           case "rewrite":
             const rewriteResult = await rewriteText({
-              text: inputText,
-              style: "neutral", // Default style for general rewrite
+              ...commonInput,
+              style: "neutral", 
             });
             resultText = rewriteResult.rewrittenText;
             break;
           case "expand":
-            const expandResult = await expandText({ text: inputText });
+            const expandResult = await expandText(commonInput);
             resultText = expandResult.expandedText;
             break;
           case "summarize":
-            const summarizeResult = await summarizeText({ text: inputText });
+            const summarizeResult = await summarizeText(commonInput);
             resultText = summarizeResult.summary;
             break;
           case "tone":
             const toneResult = await changeTextTone({
-              text: inputText,
+              ...commonInput,
               tone: selectedTone,
             });
             resultText = toneResult.changedText;
             break;
           case "sentiment":
-            const sentimentResult = await analyzeTextSentiment({ text: inputText });
+            const sentimentResult = await analyzeTextSentiment(commonInput);
             resultText = `Cảm xúc: ${sentimentResult.sentiment}\n\nGiải thích: ${sentimentResult.explanation}`;
             break;
           case "titleKeywords":
-            const titleKeywordsResult = await generateTitleAndKeywords({ text: inputText });
+            const titleKeywordsResult = await generateTitleAndKeywords(commonInput);
             resultText = `Tiêu đề đề xuất: ${titleKeywordsResult.generatedTitle}\n\nTừ khóa: ${titleKeywordsResult.generatedKeywords.join(', ')}`;
             break;
           default:
@@ -206,9 +241,9 @@ export default function ScribbleGeniusPage() {
               onValueChange={handleActionChange}
               className="w-full"
             >
-              <TabsList className="grid h-auto w-full grid-cols-2 gap-3 bg-transparent p-0 sm:grid-cols-3">
+              <TabsList className="grid h-auto w-full grid-cols-2 gap-2 bg-transparent p-0 sm:grid-cols-3 md:grid-cols-6">
                 {(Object.keys(actionIcons) as Action[]).map((action) => (
-                  <TabsTrigger key={action} value={action} className="capitalize text-sm flex items-center justify-center">
+                  <TabsTrigger key={action} value={action} className="capitalize text-sm flex items-center justify-center py-2.5">
                     {actionIcons[action]}
                     {actionDisplayNames[action]}
                   </TabsTrigger>
@@ -219,7 +254,7 @@ export default function ScribbleGeniusPage() {
                 <CardHeader>
                   <CardTitle className="text-xl">Văn bản của bạn</CardTitle>
                   <CardDescription>
-                    Nhập văn bản bạn muốn chuyển đổi.
+                    Nhập văn bản bạn muốn chuyển đổi và chọn ngôn ngữ đầu ra.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -231,27 +266,48 @@ export default function ScribbleGeniusPage() {
                     className="resize-none text-base focus:ring-2 focus:ring-primary/50"
                     disabled={isPending}
                   />
-                  {selectedAction === "tone" && (
-                    <div className="space-y-1.5">
-                      <label htmlFor="tone-select" className="text-sm font-medium">Chọn giọng điệu</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="language-select" className="text-sm font-medium mb-1.5 block">Ngôn ngữ đầu ra</Label>
                       <Select
-                        value={selectedTone}
-                        onValueChange={handleToneChange}
+                        value={selectedLanguage}
+                        onValueChange={handleLanguageChange}
                         disabled={isPending}
                       >
-                        <SelectTrigger id="tone-select" className="w-full sm:w-[200px]">
-                          <SelectValue placeholder="Chọn một giọng điệu" />
+                        <SelectTrigger id="language-select" className="w-full">
+                          <SelectValue placeholder="Chọn ngôn ngữ" />
                         </SelectTrigger>
                         <SelectContent>
-                          {toneOptions.map((tone) => (
-                            <SelectItem key={tone} value={tone}>
-                              {toneDisplayMap[tone]}
+                          {languageOptions.map((lang) => (
+                            <SelectItem key={lang} value={lang}>
+                              {languageDisplayMap[lang]}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
-                  )}
+                    {selectedAction === "tone" && (
+                      <div>
+                        <Label htmlFor="tone-select" className="text-sm font-medium mb-1.5 block">Chọn giọng điệu</Label>
+                        <Select
+                          value={selectedTone}
+                          onValueChange={handleToneChange}
+                          disabled={isPending}
+                        >
+                          <SelectTrigger id="tone-select" className="w-full">
+                            <SelectValue placeholder="Chọn một giọng điệu" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {toneOptions.map((tone) => (
+                              <SelectItem key={tone} value={tone}>
+                                {toneDisplayMap[tone]}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
                 <CardFooter>
                   <Button
@@ -325,8 +381,7 @@ export default function ScribbleGeniusPage() {
   );
 }
 
-// Helper component for SparklesIcon if not available in lucide-react by that name
-// Using a generic one for now.
+// Helper component for SparklesIcon
 const SparklesIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"

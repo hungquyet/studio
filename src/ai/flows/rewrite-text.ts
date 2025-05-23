@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -18,11 +19,12 @@ const RewriteTextInputSchema = z.object({
     .describe(
       'Phong cách mong muốn của văn bản được viết lại. Ví dụ: chuyên nghiệp, thân thiện, học thuật, thông thường.'
     ),
+  targetLanguage: z.string().describe('Ngôn ngữ mong muốn cho văn bản đầu ra (ví dụ: English, Vietnamese, French). Mặc định là Vietnamese nếu không được cung cấp.'),
 });
 export type RewriteTextInput = z.infer<typeof RewriteTextInputSchema>;
 
 const RewriteTextOutputSchema = z.object({
-  rewrittenText: z.string().describe('Văn bản đã được viết lại, bằng tiếng Việt.'),
+  rewrittenText: z.string().describe('Văn bản đã được viết lại, bằng ngôn ngữ mục tiêu.'),
 });
 export type RewriteTextOutput = z.infer<typeof RewriteTextOutputSchema>;
 
@@ -34,7 +36,7 @@ const rewriteTextPrompt = ai.definePrompt({
   name: 'rewriteTextPrompt',
   input: {schema: RewriteTextInputSchema},
   output: {schema: RewriteTextOutputSchema},
-  prompt: `Viết lại văn bản sau theo phong cách {{{style}}}. Trả lời bằng tiếng Việt:\n\n{{{text}}}`,
+  prompt: `Viết lại văn bản sau theo phong cách {{{style}}}. Trả lời bằng ngôn ngữ {{{targetLanguage}}}:\n\n{{{text}}}`,
 });
 
 const rewriteTextFlow = ai.defineFlow(

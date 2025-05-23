@@ -1,3 +1,4 @@
+
 // Summarize text flow.
 'use server';
 
@@ -14,11 +15,12 @@ import {z} from 'genkit';
 
 const SummarizeTextInputSchema = z.object({
   text: z.string().describe('Văn bản cần tóm tắt.'),
+  targetLanguage: z.string().describe('Ngôn ngữ mong muốn cho văn bản đầu ra (ví dụ: English, Vietnamese, French). Mặc định là Vietnamese nếu không được cung cấp.'),
 });
 export type SummarizeTextInput = z.infer<typeof SummarizeTextInputSchema>;
 
 const SummarizeTextOutputSchema = z.object({
-  summary: z.string().describe('Bản tóm tắt của văn bản, bằng tiếng Việt.'),
+  summary: z.string().describe('Bản tóm tắt của văn bản, bằng ngôn ngữ mục tiêu.'),
 });
 export type SummarizeTextOutput = z.infer<typeof SummarizeTextOutputSchema>;
 
@@ -30,7 +32,7 @@ const summarizeTextPrompt = ai.definePrompt({
   name: 'summarizeTextPrompt',
   input: {schema: SummarizeTextInputSchema},
   output: {schema: SummarizeTextOutputSchema},
-  prompt: `Tóm tắt văn bản sau đây. Trả lời bằng tiếng Việt: {{{text}}}`,
+  prompt: `Tóm tắt văn bản sau đây. Trả lời bằng ngôn ngữ {{{targetLanguage}}}: {{{text}}}`,
 });
 
 const summarizeTextFlow = ai.defineFlow(
