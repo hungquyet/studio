@@ -12,14 +12,14 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ChangeTextToneInputSchema = z.object({
-  text: z.string().describe('The text to change the tone of.'),
-  tone: z.string().describe('The desired tone of the text.'),
+  text: z.string().describe('Văn bản cần thay đổi giọng điệu.'),
+  tone: z.string().describe('Giọng điệu mong muốn của văn bản (ví dụ: Trang trọng, Thân thiện, Thông thường, Chuyên nghiệp, Học thuật).'),
 });
 
 export type ChangeTextToneInput = z.infer<typeof ChangeTextToneInputSchema>;
 
 const ChangeTextToneOutputSchema = z.object({
-  changedText: z.string().describe('The text with the changed tone.'),
+  changedText: z.string().describe('Văn bản đã được thay đổi giọng điệu, bằng tiếng Việt.'),
 });
 
 export type ChangeTextToneOutput = z.infer<typeof ChangeTextToneOutputSchema>;
@@ -32,12 +32,12 @@ const prompt = ai.definePrompt({
   name: 'changeTextTonePrompt',
   input: {schema: ChangeTextToneInputSchema},
   output: {schema: ChangeTextToneOutputSchema},
-  prompt: `You are a writing assistant. Your task is to change the tone of the text provided by the user to the tone specified by the user.
+  prompt: `Bạn là một trợ lý viết. Nhiệm vụ của bạn là thay đổi giọng điệu của văn bản do người dùng cung cấp sang giọng điệu do người dùng chỉ định. Trả lời bằng tiếng Việt.
 
-Text: {{{text}}}
-Tone: {{{tone}}}
+Văn bản: {{{text}}}
+Giọng điệu: {{{tone}}}
 
-Changed Text: `,
+Văn bản đã thay đổi: `,
 });
 
 const changeTextToneFlow = ai.defineFlow(

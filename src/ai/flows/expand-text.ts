@@ -12,12 +12,12 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ExpandTextInputSchema = z.object({
-  text: z.string().describe('The text to expand.'),
+  text: z.string().describe('Văn bản cần mở rộng.'),
 });
 export type ExpandTextInput = z.infer<typeof ExpandTextInputSchema>;
 
 const ExpandTextOutputSchema = z.object({
-  expandedText: z.string().describe('The expanded text.'),
+  expandedText: z.string().describe('Văn bản đã được mở rộng, bằng tiếng Việt.'),
 });
 export type ExpandTextOutput = z.infer<typeof ExpandTextOutputSchema>;
 
@@ -29,7 +29,7 @@ const expandTextPrompt = ai.definePrompt({
   name: 'expandTextPrompt',
   input: {schema: ExpandTextInputSchema},
   output: {schema: ExpandTextOutputSchema},
-  prompt: `Expand the following text to provide more detail and explanation:\n\n{{{text}}}`,
+  prompt: `Mở rộng văn bản sau đây để cung cấp thêm chi tiết và giải thích. Trả lời bằng tiếng Việt:\n\n{{{text}}}`,
 });
 
 const expandTextFlow = ai.defineFlow(

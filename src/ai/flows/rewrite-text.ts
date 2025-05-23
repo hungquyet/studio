@@ -12,17 +12,17 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const RewriteTextInputSchema = z.object({
-  text: z.string().describe('The text to be rewritten.'),
+  text: z.string().describe('Văn bản cần được viết lại.'),
   style: z
     .string()
     .describe(
-      'The desired style of the rewritten text. Examples: professional, friendly, academic, casual.'
+      'Phong cách mong muốn của văn bản được viết lại. Ví dụ: chuyên nghiệp, thân thiện, học thuật, thông thường.'
     ),
 });
 export type RewriteTextInput = z.infer<typeof RewriteTextInputSchema>;
 
 const RewriteTextOutputSchema = z.object({
-  rewrittenText: z.string().describe('The rewritten text.'),
+  rewrittenText: z.string().describe('Văn bản đã được viết lại, bằng tiếng Việt.'),
 });
 export type RewriteTextOutput = z.infer<typeof RewriteTextOutputSchema>;
 
@@ -34,7 +34,7 @@ const rewriteTextPrompt = ai.definePrompt({
   name: 'rewriteTextPrompt',
   input: {schema: RewriteTextInputSchema},
   output: {schema: RewriteTextOutputSchema},
-  prompt: `Rewrite the following text in a {{{style}}} style:\n\n{{{text}}}`,
+  prompt: `Viết lại văn bản sau theo phong cách {{{style}}}. Trả lời bằng tiếng Việt:\n\n{{{text}}}`,
 });
 
 const rewriteTextFlow = ai.defineFlow(

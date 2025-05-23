@@ -11,13 +11,13 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateTitleAndKeywordsInputSchema = z.object({
-  text: z.string().describe('The text to generate a title and keywords for.'),
+  text: z.string().describe('Văn bản cần tạo tiêu đề và từ khóa.'),
 });
 export type GenerateTitleAndKeywordsInput = z.infer<typeof GenerateTitleAndKeywordsInputSchema>;
 
 const GenerateTitleAndKeywordsOutputSchema = z.object({
-  generatedTitle: z.string().describe('A concise and relevant title generated from the text, in Vietnamese.'),
-  generatedKeywords: z.array(z.string()).describe('A list of 3-5 relevant keywords extracted from the text, in Vietnamese.'),
+  generatedTitle: z.string().describe('Một tiêu đề ngắn gọn và phù hợp được tạo từ văn bản, bằng tiếng Việt.'),
+  generatedKeywords: z.array(z.string()).describe('Danh sách 3-5 từ khóa liên quan được trích xuất từ văn bản, bằng tiếng Việt.'),
 });
 export type GenerateTitleAndKeywordsOutput = z.infer<typeof GenerateTitleAndKeywordsOutputSchema>;
 

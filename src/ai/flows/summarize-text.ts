@@ -13,12 +13,12 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SummarizeTextInputSchema = z.object({
-  text: z.string().describe('The text to summarize.'),
+  text: z.string().describe('Văn bản cần tóm tắt.'),
 });
 export type SummarizeTextInput = z.infer<typeof SummarizeTextInputSchema>;
 
 const SummarizeTextOutputSchema = z.object({
-  summary: z.string().describe('The summary of the text.'),
+  summary: z.string().describe('Bản tóm tắt của văn bản, bằng tiếng Việt.'),
 });
 export type SummarizeTextOutput = z.infer<typeof SummarizeTextOutputSchema>;
 
@@ -30,7 +30,7 @@ const summarizeTextPrompt = ai.definePrompt({
   name: 'summarizeTextPrompt',
   input: {schema: SummarizeTextInputSchema},
   output: {schema: SummarizeTextOutputSchema},
-  prompt: `Summarize the following text: {{{text}}}`,
+  prompt: `Tóm tắt văn bản sau đây. Trả lời bằng tiếng Việt: {{{text}}}`,
 });
 
 const summarizeTextFlow = ai.defineFlow(

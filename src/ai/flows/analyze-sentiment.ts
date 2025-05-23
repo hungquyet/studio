@@ -11,13 +11,13 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const AnalyzeTextSentimentInputSchema = z.object({
-  text: z.string().describe('The text to analyze for sentiment.'),
+  text: z.string().describe('Văn bản cần phân tích cảm xúc.'),
 });
 export type AnalyzeTextSentimentInput = z.infer<typeof AnalyzeTextSentimentInputSchema>;
 
 const AnalyzeTextSentimentOutputSchema = z.object({
-  sentiment: z.string().describe('The overall sentiment of the text (e.g., Tích cực, Tiêu cực, Trung tính, Hỗn hợp) in Vietnamese.'),
-  explanation: z.string().describe('A brief explanation for the sentiment analysis in Vietnamese.'),
+  sentiment: z.string().describe('Cảm xúc tổng thể của văn bản (ví dụ: Tích cực, Tiêu cực, Trung tính, Hỗn hợp) bằng tiếng Việt.'),
+  explanation: z.string().describe('Giải thích ngắn gọn cho việc phân tích cảm xúc bằng tiếng Việt.'),
 });
 export type AnalyzeTextSentimentOutput = z.infer<typeof AnalyzeTextSentimentOutputSchema>;
 
